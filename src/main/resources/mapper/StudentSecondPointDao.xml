@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.Student2SecondPointDao">
+    <resultMap id="StudentKnowledgePointResult" type="com.zust.stkdy.testsystem.entity.StudentSecondKnowledgePoint">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="studentId" column="student_id" jdbcType="INTEGER"/>
+        <result property="teacherId" column="teacher_id" jdbcType="INTEGER"/>
+        <result property="firstKnowledgePointId" column="first_knowledge_point_id" jdbcType="INTEGER"/>
+        <result property="secondKnowledgePointId" column="second_knowledge_point_id" jdbcType="INTEGER"/>
+        <result property="firstKnowledgePoint" column="first_knowledge_point" jdbcType="VARCHAR"/>
+        <result property="knowledgePoint" column="knowledge_point" jdbcType="VARCHAR"/>
+        <result property="beta" column="beta" javaType="DOUBLE"/>
+        <result property="totalVisit" column="total_visit" jdbcType="INTEGER"/>
+        <result property="totalScore" column="total_score" jdbcType="DOUBLE"/>
+        <result property="M" column="M" jdbcType="DOUBLE"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insertKnowledgePoint" parameterType="com.zust.stkdy.testsystem.entity.StudentSecondKnowledgePoint">
+        INSERT INTO student_second_knowledge_points (student_id,first_knowledge_point_id,first_knowledge_point,second_knowledge_point_id,knowledge_point)
+        VALUES (#{studentId},#{firstKnowledgePointId},#{firstKnowledgePoint},#{secondKnowledgePointId},#{knowledgePoint})
+    </insert>
+    <update id="updateKnowledgePoint" parameterType="com.zust.stkdy.testsystem.entity.StudentSecondKnowledgePoint">
+        UPDATE student_second_knowledge_points
+        SET student_id=#{studentId},first_knowledge_point_id=#{firstKnowledgePointId},first_knowledge_point=#{firstKnowledgePoint},
+        second_knowledge_point_id=#{secondKnowledgePointId},knowledge_point=#{knowledgePoint},
+        beta=#{beta},total_visit=#{totalVisit},total_score=#{totalScore},M=#{M}
+    </update>
+    <select id="findKnowledgePointByStudentId" resultMap="StudentKnowledgePointResult">
+        SELECT student_id,first_knowledge_point_id,first_knowledge_point,second_knowledge_point_id,knowledge_point,beta,total_visit,total_score,M,create_time,update_time
+        FROM student_second_knowledge_points
+        WHERE student_id=#{studentId}
+    </select>
+    <select id="findKnowledgePointByStudentIdAndFirstPointId" resultMap="StudentKnowledgePointResult">
+        SELECT student_id,first_knowledge_point_id,first_knowledge_point,second_knowledge_point_id,knowledge_point,beta,total_visit,total_score,M,create_time,update_time
+        FROM student_second_knowledge_points
+        WHERE student_id=#{studentId} AND first_knowledge_point_id=#{firstKnowledgePointId}
+    </select>
+    <select id="findKnowledgePointByStudentIdAndPointId" resultMap="StudentKnowledgePointResult">
+        SELECT student_id,first_knowledge_point_id,first_knowledge_point,second_knowledge_point_id,knowledge_point,beta,total_visit,total_score,M,create_time,update_time
+        FROM student_second_knowledge_points
+        WHERE student_id=#{studentId} AND second_knowledge_point_id=#{secondKnowledgePointId}
+        LIMIT 1
+    </select>
+</mapper>
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.ExamDao">
+    <resultMap id="ExamResult" type="com.zust.stkdy.testsystem.entity.Exam">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="teacherId" column="teacher_id" jdbcType="INTEGER"/>
+        <result property="totalChoice" column="total_choice" jdbcType="INTEGER"/>
+        <result property="totalSubjective" column="total_subjective" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertExam" parameterType="com.zust.stkdy.testsystem.entity.Exam">
+        INSERT INTO exam (title,teacher_id,start_time,end_time,total_choice,total_subjective)
+        VALUES (#{title},#{teacherId},#{startTime},#{endTime},#{totalChoice},#{totalSubjective})
+    </insert>
+
+    <select id="findExamById" resultMap="ExamResult">
+        SELECT id,title,teacher_id,start_time,end_time,create_time,total_subjective,total_choice
+        FROM exam
+        WHERE id=#{id}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findExamByTitle" resultMap="ExamResult">
+        SELECT id,title,teacher_id,start_time,end_time,create_time,total_subjective,total_choice
+        FROM exam
+        WHERE title=#{title}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findExamByTeacherId" resultMap="ExamResult">
+        SELECT id,title,teacher_id,start_time,end_time,create_time,total_subjective,total_choice
+        FROM exam
+        WHERE is_deleted=0 AND teacher_id=#{teacherId}
+        <if test="wd!=null">
+            AND title LIKE '%${wd}%'
+        </if>
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findExam" resultMap="ExamResult">
+        SELECT id,title,teacher_id,start_time,end_time,create_time,total_subjective,total_choice
+        FROM exam
+        WHERE is_deleted=0
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findNumOfExamByTeacherId" parameterType="MAP" resultType="int">
+        SELECT count(*) FROM exam
+        WHERE is_deleted=0 AND teacher_id=#{teacherId}
+        <if test="wd!=null">
+            AND title LIKE '%${wd}%'
+        </if>
+    </select>
+    <select id="findNumOfExam" resultType="int">
+        SELECT count(*) FROM exam
+        WHERE is_deleted=0
+    </select>
+    <update id="deleteExam">
+        UPDATE exam
+        SET is_deleted=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="updateExam" parameterType="com.zust.stkdy.testsystem.entity.Exam">
+        UPDATE exam
+        SET title=#{title},teacher_id=#{teacherId},start_time=#{startTime},end_time=#{endTime}
+        WHERE id=#{id}
+        AND is_deleted=0
+    </update>
+    <update id="addChoiceQuestion">
+        UPDATE exam
+        SET total_choice=total_choice+1
+        WHERE id=#{examId} AND is_deleted=0
+    </update>
+    <update id="deleteChoiceQuestion">
+        UPDATE exam
+        SET total_choice=total_choice-1
+        WHERE id=#{examId} AND is_deleted=0
+    </update>
+    <update id="addSubjectiveQuestion">
+        UPDATE exam
+        SET total_subjective=total_subjective+1
+        WHERE id=#{examId} AND is_deleted=0
+    </update>
+    <update id="deleteSubjectiveQuestion">
+        UPDATE exam
+        SET total_subjective=total_subjective-1
+        WHERE id=#{examId} AND is_deleted=0
+    </update>
+</mapper>

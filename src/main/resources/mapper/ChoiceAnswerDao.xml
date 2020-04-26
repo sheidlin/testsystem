@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.ChoiceAnswerDao">
+    <resultMap id="ChoiceAnswerResult" type="com.zust.stkdy.testsystem.entity.ChoiceAnswer">
+        <result property="examId" column="exam_id" jdbcType="INTEGER"/>
+        <result property="questionId" column="question_id" jdbcType="INTEGER"/>
+        <result property="studentId" column="student_id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="answer" column="answer" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertAnswer" parameterType="com.zust.stkdy.testsystem.entity.ChoiceAnswer">
+        INSERT INTO choice_answer (exam_id,question_id,student_id)
+        VALUES (#{examId},#{questionId},#{studentId})
+    </insert>
+    <insert id="insertTeacherAnswer">
+        INSERT INTO choice_answer (exam_id,question_id,student_id)
+        SELECT exam_id,question_id,#{studentId} FROM exam_choice
+        WHERE teacher_id=#{teacherId} AND is_deleted=0
+    </insert>
+    <select id="findAnswerByExamIdAndStudentId" resultMap="ChoiceAnswerResult">
+        SELECT id,exam_id,question_id,student_id,answer,update_time,score
+        FROM choice_answer
+        WHERE student_id=#{studentId} AND exam_id=#{examId} AND is_deleted=0
+    </select>
+    <update id="deleteStudentAnswer">
+        UPDATE choice_answer
+        SET is_deleted=1
+        WHERE student_id=#{studentId} AND is_deleted=0
+    </update>
+    <update id="updateAnswer" parameterType="com.zust.stkdy.testsystem.entity.ChoiceAnswer">
+        UPDATE choice_answer
+        SET answer=#{answer},score=#{score}
+        WHERE student_id=#{studentId} AND exam_id=#{examId} AND question_id=#{questionId} AND is_deleted=0
+    </update>
+    <update id="deleteExam">
+        UPDATE choice_answer
+        SET is_deleted=1
+        WHERE exam_id=#{examId} AND is_deleted=0
+    </update>
+</mapper>

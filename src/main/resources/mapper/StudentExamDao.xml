@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.StudentExamDao">
+    <resultMap id="StudentExamResult" type="com.zust.stkdy.testsystem.entity.StudentExam">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="teacherId" column="teacher_id" jdbcType="INTEGER"/>
+        <result property="examId" column="exam_id" jdbcType="INTEGER"/>
+        <result property="studentId" column="student_id" jdbcType="INTEGER"/>
+        <result property="isFinished" column="is_finished" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="FLOAT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <insert id="insertStudentExam" parameterType="com.zust.stkdy.testsystem.entity.StudentExam">
+        INSERT INTO student_exam (teacher_id,exam_id,student_id,title,start_time,end_time)
+        VALUES (#{teacherId},#{examId},#{studentId},#{title},#{startTime},#{endTime})
+    </insert>
+    <insert id="insertTeacherExam">
+        INSERT INTO student_exam (teacher_id,exam_id,student_id,title,start_time,end_time)
+        SELECT teacher_id,id,#{studentId},title,start_time,end_time
+        FROM exam
+        WHERE teacher_id=#{teacherId} AND is_deleted=0
+    </insert>
+    <select id="findStudentExamByStudentId"  parameterType="Map" resultMap="StudentExamResult">
+        SELECT id,teacher_id,exam_id,student_id,title,start_time,end_time,is_finished,create_time,update_time,score
+        FROM student_exam
+        WHERE student_id=#{studentId} AND is_deleted=0
+        <if test="wd!=null">
+            AND title LIKE '%${wd}%'
+        </if>
+        ORDER BY start_time
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findStudentExamByTeacherId" parameterType="Map" resultMap="StudentExamResult">
+        SELECT id,teacher_id,exam_id,student_id,title,start_time,end_time,is_finished,create_time,update_time,score
+        FROM student_exam
+        WHERE teacher_id=#{teacherId} AND exam_id=#{examId} AND is_deleted=0
+        ORDER BY start_time
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findNumOfExamByStudentId" resultType="int">
+        SELECT count(*) FROM student_exam
+        WHERE student_id=#{studentId}
+        AND is_deleted=0
+
+    </select>
+    <select id="findNumOfExamByTeacherId" parameterType="Map" resultType="int">
+        SELECT count(*) FROM student_exam
+        WHERE teacher_id=#{teacherId} AND exam_id=#{examId}
+        AND is_deleted=0
+    </select>
+    <select id="findeStudentExamByExamIdAndStudentId" resultMap="StudentExamResult">
+        SELECT id,teacher_id,exam_id,student_id,title,start_time,end_time,is_finished,create_time,update_time,score
+        FROM student_exam
+        WHERE student_id=#{studentId} AND exam_id=#{examId} AND is_deleted=0
+    </select>
+    <select id="findStudentExamById" resultMap="StudentExamResult">
+        SELECT id,teacher_id,exam_id,student_id,title,start_time,end_time,is_finished,create_time,update_time,score
+        FROM student_exam
+        WHERE id=#{id}
+    </select>
+    <update id="deleteStudentExamByExamId">
+        UPDATE student_exam
+        SET is_deleted=1
+        WHERE exam_id=#{examId} AND is_deleted=0
+    </update>
+    <update id="updateStudentExam" parameterType="com.zust.stkdy.testsystem.entity.Exam">
+        UPDATE student_exam
+        SET title=#{title},start_time=#{startTime},end_time=#{endTime}
+        WHERE exam_id=#{id} AND is_deleted=0
+    </update>
+    <update id="updateScore" parameterType="com.zust.stkdy.testsystem.entity.StudentExam">
+        UPDATE student_exam
+        SET score=#{score}
+        WHERE student_id=#{studentId} AND exam_id=#{examId} AND is_deleted=0
+    </update>
+    <update id="finishExam">
+        UPDATE student_exam
+        SET is_finished=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="deleteExamByStudentId">
+        UPDATE student_exam
+        SET is_deleted=1
+        WHERE student_id=#{studentId} AND is_deleted=0
+    </update>
+</mapper>

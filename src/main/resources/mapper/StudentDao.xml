@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.StudentDao">
+    <resultMap id="StudentResult" type="com.zust.stkdy.testsystem.entity.Student">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userName" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="realName" column="realname" jdbcType="VARCHAR"/>
+        <result property="school" column="school" jdbcType="VARCHAR"/>
+        <result property="major" column="major" jdbcType="VARCHAR"/>
+        <result property="sno" column="sno" jdbcType="VARCHAR"/>
+        <result property="classs" column="class" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result property="teacherId" column="teacher_id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertStudent" parameterType="com.zust.stkdy.testsystem.entity.Student">
+        INSERT INTO student (username,password,realname,school,major,class,sno,email)
+        VALUES (#{userName},#{password},#{realName},#{school},#{major},#{classs},#{sno},#{email})
+    </insert>
+
+    <select id="findStudentById" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE id=#{id}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findStudentByName" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE username=#{userName}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findStudentByToken" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE token=#{token}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findStudentByNameAndPassword" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE username=#{userName} AND password=#{password}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findStudentByTeacherId" parameterType="Map" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE teacher_id=#{teacherId}
+        AND is_deleted=0
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findStudent" parameterType="Map" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE is_deleted=0
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findStudentByEmail" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE email=#{email} AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findNumOfStudentByTeacherId" resultType="int">
+        SELECT count(*) FROM student
+        WHERE teacher_id=#{teacherId}
+        AND is_deleted=0
+    </select>
+    <select id="findNumOfStudent" resultType="int">
+        SELECT count(*) FROM student
+        WHERE is_deleted=0
+    </select>
+    <select id="findStudentBySno" resultMap="StudentResult">
+        SELECT id,username,realname,school,major,class,sno,email,teacher_id,create_time,token
+        FROM student
+        WHERE sno=#{sno}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <update id="updateStudent" parameterType="com.zust.stkdy.testsystem.entity.Student">
+        UPDATE student
+        SET username=#{userName},
+            realname=#{realName},
+            school=#{school},
+            major=#{major},
+            class=#{classs},
+            sno=#{sno},
+            email=#{email},
+            teacher_id=#{teacherId}
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="updateStudentPassword">
+        UPDATE student
+        SET password=#{password},
+            token=''
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="updateStudentToken">
+        UPDATE student
+        SET token=#{token}
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="deleteStudent">
+        UPDATE student
+        SET is_deleted=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+</mapper>

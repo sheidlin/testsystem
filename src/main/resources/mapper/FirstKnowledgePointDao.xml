@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.FirstKnowledgePointDao">
+    <resultMap id="FirstKnowledgeResult" type="com.zust.stkdy.testsystem.entity.FirstKnowledgePoint">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="knowledgePoint" column="knowledge_point" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insertKnowledgePoint" parameterType="com.zust.stkdy.testsystem.entity.FirstKnowledgePoint">
+        INSERT INTO first_knowledge_points (knowledge_point)
+        VALUES (#{knowledgePoint})
+    </insert>
+    <select id="findKnowledgePointById" resultMap="FirstKnowledgeResult">
+        SELECT id,knowledge_point,create_time,update_time
+        FROM first_knowledge_points
+        WHERE id=#{id} AND is_deleted=0
+    </select>
+    <select id="findKnowledgePointByKnowledgePoint" resultMap="FirstKnowledgeResult">
+        SELECT id,knowledge_point,create_time,update_time
+        FROM first_knowledge_points
+        WHERE knowledge_point=#{knowledgePoint} AND is_deleted=0
+    </select>
+    <update id="deleteKnowledgePointByKnowledgePoint">
+        UPDATE first_knowledge_points
+        SET is_deleted=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+</mapper>
+

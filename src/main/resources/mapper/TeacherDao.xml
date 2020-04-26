@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.TeacherDao">
+    <resultMap id="TeacherResult" type="com.zust.stkdy.testsystem.entity.Teacher">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userName" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="realName" column="realname" jdbcType="VARCHAR"/>
+        <result property="school" column="school" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insertTeacher" parameterType="com.zust.stkdy.testsystem.entity.Teacher">
+        INSERT INTO teacher (username,password)
+        VALUES (#{userName},#{password})
+    </insert>
+
+    <select id="findTeacherById" resultMap="TeacherResult">
+        SELECT id,username,password,realname,school,email,create_time,token
+        FROM teacher
+        WHERE id=#{id}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findTeacherByName" resultMap="TeacherResult">
+        SELECT id,username,password,realname,school,email,create_time,token
+        FROM teacher
+        WHERE username=#{userName}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findTeacherByToken" resultMap="TeacherResult">
+        SELECT id,username,password,realname,school,email,create_time,token
+        FROM teacher
+        WHERE token=#{token}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findTeacherByNameAndPassword" resultMap="TeacherResult">
+        SELECT id,username,password,realname,school,email,create_time,token
+        FROM teacher
+        WHERE username=#{userName} AND password=#{password}
+        AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findTeacher" parameterType="MAP" resultMap="TeacherResult">
+        SELECT id,username,password,realname,school,email,create_time,token
+        FROM teacher
+        WHERE is_deleted=0
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+    <select id="findNumOfTeacher" resultType="int">
+        SELECT count(*) FROM teacher
+        WHERE is_deleted=0
+    </select>
+    <update id="updateTeacher" parameterType="com.zust.stkdy.testsystem.entity.Teacher">
+        UPDATE teacher
+        SET username=#{userName},password=#{password},realname=#{realName},school=#{school},email=#{email}
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="updateTeacherToken">
+        UPDATE teacher
+        SET token=#{token}
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="deleteTeacher">
+        UPDATE teacher
+        SET is_deleted=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+</mapper>
+

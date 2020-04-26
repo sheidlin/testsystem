@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.Exam2ChoiceDao">
+    <insert id="insertExam2Question">
+        INSERT INTO exam_choice(exam_id,question_id,teacher_id)
+        VALUES (#{examId},#{questionId},#{teacherId})
+    </insert>
+    <select id="findQuestionIdByExamId" resultType="int">
+      SELECT question_id
+      FROM exam_choice
+      WHERE exam_id=#{examId} AND is_deleted=0
+    </select>
+    <update id="deleteExam">
+        UPDATE exam_choice
+        SET is_deleted=1
+        WHERE exam_id=#{examId} AND is_deleted=0;
+    </update>
+    <update id="deleteExam2Question">
+        UPDATE exam_choice
+        SET is_deleted=1
+        WHERE exam_id=#{examId} AND question_id=#{questionId} AND is_deleted=0
+    </update>
+</mapper>

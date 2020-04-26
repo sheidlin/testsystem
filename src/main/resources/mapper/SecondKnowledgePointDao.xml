@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.SecondKnowledgePointDao">
+    <resultMap id="SecondKnowledgeResult" type="com.zust.stkdy.testsystem.entity.SecondKnowledgePoint">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="firstKnowledgePointId" column="first_knowledge_point_id" jdbcType="INTEGER"/>
+        <result property="firstKnowledgePoint" column="first_knowledge_point" jdbcType="VARCHAR"/>
+        <result property="knowledgePoint" column="knowledge_point" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insertKnowledgePoint" parameterType="com.zust.stkdy.testsystem.entity.SecondKnowledgePoint">
+        INSERT INTO second_knowledge_points (knowledge_point,first_knowledge_point_id,first_knowledge_point)
+        VALUES (#{knowledgePoint},#{firstKnowledgePointId},#{firstKnowledgePoint})
+    </insert>
+    <select id="findKnowledgePointById"  resultMap="SecondKnowledgeResult">
+        SELECT id,knowledge_point,first_knowledge_point_id,first_knowledge_point,create_time,update_time
+        FROM second_knowledge_points
+        WHERE id=#{id} AND is_deleted=0
+    </select>
+    <select id="findKnowledgePointByKnowledgePointAndFirstPointId" resultMap="SecondKnowledgeResult">
+        SELECT id,knowledge_point,first_knowledge_point_id,first_knowledge_point,create_time,update_time
+        FROM second_knowledge_points
+        WHERE first_knowledge_point_id=#{firstKnowledgePointId}
+        AND knowledge_point=#{knowledgePoint}AND is_deleted=0
+    </select>
+    <select id="findKnowledgePointByKnowledgePoint" resultMap="SecondKnowledgeResult">
+        SELECT id,knowledge_point,first_knowledge_point_id,first_knowledge_point,create_time,update_time
+        FROM second_knowledge_points
+        WHERE knowledge_point=#{knowledgePoint} AND is_deleted=0
+    </select>
+    <update id="deleteKnowledgePointByKnowledgePoint">
+        UPDATE second_knowledge_points
+        SET is_deleted=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+</mapper>
+

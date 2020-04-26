@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zust.stkdy.testsystem.dao.SubjectiveQuestionDao">
+    <resultMap id="SubjectiveQuestionResult" type="com.zust.stkdy.testsystem.entity.SubjectiveQuestion">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="answer" column="answer" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="wordsString" column="words_string" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="secondLevelKnowledgePointId" column="second_level_knowledge_point_id" jdbcType="INTEGER"/>
+        <result property="firstLevelKnowledgePointId" column="first_level_knowledge_point_id" jdbcType="INTEGER"/>
+        <result property="secondLevelKnowledgePoint" column="second_level_knowledge_point" jdbcType="VARCHAR"/>
+        <result property="firstLevelKnowledgePoint" column="first_level_knowledge_point" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertQuestion" parameterType="com.zust.stkdy.testsystem.entity.SubjectiveQuestion">
+        INSERT INTO subjective_question (description,answer,words_string,second_level_knowledge_point_id,first_level_knowledge_point_id,second_level_knowledge_point,first_level_knowledge_point)
+        VALUES (#{description},#{answer},#{wordsString},#{secondLevelKnowledgePointId},#{firstLevelKnowledgePointId},#{secondLevelKnowledgePoint},#{firstLevelKnowledgePoint})
+    </insert>
+    <select id="findQuestionById" resultMap="SubjectiveQuestionResult">
+        SELECT id,description,answer,create_time,words_string,second_level_knowledge_point_id,first_level_knowledge_point_id,second_level_knowledge_point,first_level_knowledge_point
+        FROM subjective_question
+        WHERE id=#{id} AND is_deleted=0
+    </select>
+    <select id="findQuestionByIdSpecialy" resultMap="SubjectiveQuestionResult">
+        SELECT id,description,answer,create_time,words_string,second_level_knowledge_point_id,first_level_knowledge_point_id,second_level_knowledge_point,first_level_knowledge_point
+        FROM subjective_question
+        WHERE id=#{id}
+    </select>
+    <select id="findNumOfQuestion" parameterType="MAP" resultType="int">
+        SELECT COUNT(*) FROM subjective_question
+        WHERE is_deleted=0
+        <if test="wd!=null">
+            AND (description LIKE '%${wd}%' OR answer LIKE '%${wd}%')
+        </if>
+    </select>
+    <select id="findQuestion" parameterType="MAP" resultMap="SubjectiveQuestionResult">
+        SELECT id,description,answer,create_time,words_string,second_level_knowledge_point_id,first_level_knowledge_point_id,second_level_knowledge_point,first_level_knowledge_point
+        FROM subjective_question
+        WHERE is_deleted=0
+        <if test="wd!=null">
+            AND (description LIKE '%${wd}%' OR answer LIKE '%${wd}%')
+        </if>
+        <if test="start!=null and limit!=null">
+            LIMIT #{start},#{limit}
+        </if>
+    </select>
+
+    <update id="updateQuestion" parameterType="com.zust.stkdy.testsystem.entity.SubjectiveQuestion">
+        UPDATE subjective_question
+        SET description=#{description},answer=#{answer},words_string=#{wordsString}
+        ,second_level_knowledge_point_id=#{secondLevelKnowledgePointId}
+        ,first_level_knowledge_point_id=#{firstLevelKnowledgePointId}
+        ,second_level_knowledge_point=#{secondLevelKnowledgePoint}
+        ,first_level_knowledge_point=#{firstLevelKnowledgePoint}
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="deleteQuestion">
+        UPDATE subjective_question
+        SET is_deleted=1
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+    <update id="updateKeyWords" parameterType="com.zust.stkdy.testsystem.entity.SubjectiveQuestion">
+        UPDATE subjective_question
+        SET words_string=#{wordsString}
+        WHERE id=#{id} AND is_deleted=0
+    </update>
+</mapper>
