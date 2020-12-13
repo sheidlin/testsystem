@@ -53,10 +53,7 @@ public class ChoiceQuestionController {
         else return ResultGenerator.genFailResult("");
     }
     @RequestMapping(value = "/info/{id}",method = RequestMethod.GET)
-    public Result getChoiceQuestion(@PathVariable int id, @TokenToTeacher Teacher teacher){
-        if(teacher==null) {
-            return ResultGenerator.genNotLoginResult();
-        }
+    public Result getChoiceQuestion(@PathVariable int id){
         if(id<0){
             return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR,"NotExist");
         }
