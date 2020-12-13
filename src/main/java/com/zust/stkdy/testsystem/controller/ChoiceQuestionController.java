@@ -66,7 +66,7 @@ public class ChoiceQuestionController {
         else return ResultGenerator.genSuccessResult(choiceQuestion);
     }
     @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public Result getChoiceQuestionList( @RequestParam Map<String ,Object> param, @TokenToTeacher Teacher teacher){
+    public Result getChoiceQuestionList(  @RequestParam Map<String ,Object> param, @TokenToTeacher Teacher teacher){
         if(teacher==null) {
             return ResultGenerator.genNotLoginResult();
         }
