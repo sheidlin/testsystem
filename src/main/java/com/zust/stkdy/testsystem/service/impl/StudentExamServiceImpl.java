@@ -37,7 +37,6 @@ public class StudentExamServiceImpl implements StudentExamService {
         pageUtil.put("studentId",studentId);
         List<StudentExam>studentExamList=studentExamDao.findStudentExamByStudentId(pageUtil);
         for(StudentExam studentExam:studentExamList){
-            System.out.println(studentExam.toString());
             Exam exam=examDao.findExamById(studentExam.getExamId());
             studentExam.setTotalSubjective(exam.getTotalSubjective());
             studentExam.setTotalChoice(exam.getTotalChoice());
@@ -54,14 +53,11 @@ public class StudentExamServiceImpl implements StudentExamService {
         pageUtil.put("teacherId",teacherId);
         List<StudentExam>studentExamList=studentExamDao.findStudentExamByTeacherId(pageUtil);
         for(StudentExam studentExam:studentExamList){
-            System.out.println(studentExam.toString());
             Exam exam=examDao.findExamById(studentExam.getExamId());
-            System.out.println(exam.toString());
             Student student=studentDao.findStudentById(studentExam.getStudentId());
             studentExam.setTotalSubjective(exam.getTotalSubjective());
             studentExam.setTotalChoice(exam.getTotalChoice());
             studentExam.setTotalScore(studentExam.getTotalChoice()*4+studentExam.getTotalSubjective()*10);
-            System.out.println(exam.toString());
             if(student!=null){
                 studentExam.addStudent(student);
             }
@@ -98,6 +94,12 @@ public class StudentExamServiceImpl implements StudentExamService {
                 choiceQuestion.setAnswer(-1);
             }
         }
+        Student student=studentDao.findStudentById(studentId);
+        if(student!=null){
+            studentExam.setStudentSno(student.getSno());
+            studentExam.setStudentName(student.getRealName());
+            studentExam.setStudentMajor(student.getMajor());
+        }
         studentExam.setChoiceAnswerList(choiceAnswers);
         studentExam.setChoiceQuestionList(choiceQuestions);
         studentExam.setSubjectiveAnswerList(subjectiveAnswers);
@@ -105,7 +107,6 @@ public class StudentExamServiceImpl implements StudentExamService {
         studentExam.setTotalChoice(studentExam.getChoiceQuestionList().size());
         studentExam.setTotalSubjective(studentExam.getSubjectiveQuestionList().size());
         studentExam.setTotalScore(studentExam.getTotalChoice()*4+studentExam.getTotalSubjective()*10);
-        System.out.println(studentExam.toString());
         return studentExam;
     }
 
@@ -116,28 +117,23 @@ public class StudentExamServiceImpl implements StudentExamService {
         for(int i=0;i<l;i++){
             SubjectiveAnswer subjectiveAnswer=studentExam.getSubjectiveAnswerList().get(i);
             SubjectiveQuestion subjectiveQuestion=subjectiveQuestionDao.findQuestionById(subjectiveAnswer.getQuestionId());
-//            JudgeUtil judgeUtil=new JudgeUtil(subjectiveAnswer.getAnswer(),subjectiveQuestion.getAnswer(),subjectiveQuestion.getWordsString(),1,1);
-//            System.out.println(judgeUtil.toString());
-//            double score=judgeUtil.judge();
-            double score=10;
+            JudgeUtil judgeUtil=new JudgeUtil(subjectiveAnswer.getAnswer(),subjectiveQuestion.getAnswer(),subjectiveQuestion.getWordsString(),1,1);
+            double score;
+            if(StringUtils.isEmptyOrWhitespaceOnly(judgeUtil.getAnswer()))score=0;
+            else score=judgeUtil.judge();
             totscore+=score;
             subjectiveAnswer.setScore(score);
             subjectiveAnswerDao.updateAnswer(subjectiveAnswer);
             //知识点
             if(subjectiveQuestion.getSecondLevelKnowledgePointId()!=-1){
-                System.out.println(1111111);
                 StudentSecondKnowledgePoint studentSecondKnowledgePoint=student2SecondPointDao.findKnowledgePointByStudentIdAndPointId(studentExam.getStudentId(),subjectiveQuestion.getSecondLevelKnowledgePointId());
                 if(studentSecondKnowledgePoint==null){
                     studentSecondKnowledgePoint=new StudentSecondKnowledgePoint(studentExam.getStudentId(),studentExam.getTeacherId(),subjectiveQuestion.getFirstLevelKnowledgePointId(),subjectiveQuestion.getFirstLevelKnowledgePoint(),subjectiveQuestion.getSecondLevelKnowledgePointId(),subjectiveQuestion.getSecondLevelKnowledgePoint());
-                    System.out.println(studentSecondKnowledgePoint.toString());
                     student2SecondPointDao.insertKnowledgePoint(studentSecondKnowledgePoint);
-                    System.out.println(1111111);
                     studentSecondKnowledgePoint=student2SecondPointDao.findKnowledgePointByStudentIdAndPointId(studentExam.getStudentId(),subjectiveQuestion.getSecondLevelKnowledgePointId());
-                    System.out.println(studentSecondKnowledgePoint.toString());
                 }
-                System.out.println(studentSecondKnowledgePoint.toString());
-                studentSecondKnowledgePoint=JudgeUtil.rewriteLine(studentSecondKnowledgePoint,score);
-                student2SecondPointDao.updateKnowledgePoint(studentSecondKnowledgePoint);
+                StudentSecondKnowledgePoint studentSecondKnowledgePoint1=JudgeUtil.rewriteLine(studentSecondKnowledgePoint,score);
+                student2SecondPointDao.updateKnowledgePoint(studentSecondKnowledgePoint1);
             }
         }
         l=studentExam.getChoiceAnswerList().size();
@@ -146,6 +142,7 @@ public class StudentExamServiceImpl implements StudentExamService {
             ChoiceQuestion choiceQuestion=studentExam.getChoiceQuestionList().get(i);
             if(choiceAnswer.getAnswer()==choiceQuestion.getAnswer()){
                 choiceAnswer.setScore(4);
+                totscore+=4;
                 choiceAnswerDao.updateAnswer(choiceAnswer);
             }
         }

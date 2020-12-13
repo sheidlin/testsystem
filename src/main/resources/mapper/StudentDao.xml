@@ -89,6 +89,32 @@
         AND is_deleted=0
         LIMIT 1
     </select>
+    <select id="findMajorGroup" parameterType="Map" resultMap="StudentResult">
+        SELECT major
+        FROM student s
+        WHERE EXISTS (
+          SELECT * FROM student_exam
+          WHERE exam_id=#{examId} AND s.id=student_id
+        )
+        GROUP BY major
+    </select>
+    <select id="findClassGroup" parameterType="Map" resultMap="StudentResult">
+        SELECT class
+        FROM student s
+        WHERE EXISTS (
+          SELECT * FROM student_exam
+          WHERE exam_id=#{examId} AND s.major=#{major} AND s.id=student_id
+        )
+        GROUP BY class
+    </select>
+    <select id="findStudentGroup" parameterType="Map" resultMap="StudentResult">
+        SELECT sno,realName
+        FROM student s
+        WHERE EXISTS (
+          SELECT * FROM student_exam
+          WHERE exam_id=#{examId}  AND s.major=#{major} AND s.class=#{class} AND s.id=student_id
+        )
+    </select>
     <update id="updateStudent" parameterType="com.zust.stkdy.testsystem.entity.Student">
         UPDATE student
         SET username=#{userName},

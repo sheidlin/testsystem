@@ -19,6 +19,9 @@ public interface StudentDao {
     List<Student> findStudent(Map param);
     int findNumOfStudentByTeacherId(@Param("teacherId") Integer teacherId);
     int findNumOfStudent();
+    List<Student> findMajorGroup(Map param);
+    List<Student> findClassGroup(Map param);
+    List<Student> findStudentGroup(Map param);
     int updateStudent(Student student);
     int updateStudentToken(@Param("id") Integer id,@Param("token") String token);
     int updateStudentPassword(@Param("id") Integer id,@Param("password") String password);

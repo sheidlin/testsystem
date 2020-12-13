@@ -17,4 +17,5 @@ public interface TeacherDao {
     int findNumOfTeacher(Map param);
     int updateTeacher(Teacher teacher);
     int updateTeacherToken(@Param("id") Integer id,@Param("token") String token);
+    List<Teacher> findAllTeacher(Map param);
 }

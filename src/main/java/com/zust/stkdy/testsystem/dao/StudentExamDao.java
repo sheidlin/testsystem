@@ -13,9 +13,11 @@ public interface StudentExamDao {
     StudentExam findeStudentExamByExamIdAndStudentId(@Param("studentId") Integer studentId,@Param("examId") Integer examId);
     StudentExam findStudentExamById(@Param("id") Integer id);
     List<StudentExam>findStudentExamByStudentId(Map map);
-    List<StudentExam>findStudentExamByTeacherId(Map map);//
+    List<StudentExam>findStudentExamByTeacherId(Map map);
     int findNumOfExamByStudentId(@Param("studentId") Integer studentId);
     int findNumOfExamByTeacherId(Map map);//
+    int findNumOfParticipantsByExamId(@Param("examId") Integer examId);//
+    int findNumOfParticipantsByUpperAndLower(@Param("lower") float lower,@Param("upper") float upper,@Param("examId") Integer examId);//
     int deleteStudentExamByExamId(@Param("examId") Integer examId);
     int updateScore(StudentExam studentExam);
     int finishExam(@Param("id") Integer id);

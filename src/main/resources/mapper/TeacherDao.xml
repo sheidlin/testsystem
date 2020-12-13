@@ -19,10 +19,19 @@
     </insert>
 
     <select id="findTeacherById" resultMap="TeacherResult">
-        SELECT id,username,password,realname,school,email,create_time,token
+        SELECT id,username,realname,school,email,create_time,token
         FROM teacher
         WHERE id=#{id}
         AND is_deleted=0
+        LIMIT 1
+    </select>
+    <select id="findAllTeacher" resultMap="TeacherResult">
+        SELECT id,username,realname,school,email,create_time,token
+        FROM teacher
+        WHERE is_deleted=0
+        <if test="wd!=null">
+            AND username LIKE '%${wd}%'
+        </if>
         LIMIT 1
     </select>
     <select id="findTeacherByName" resultMap="TeacherResult">

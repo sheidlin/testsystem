@@ -49,5 +49,4 @@ public class ChoiceQuestionServiceImpl implements ChoiceQuestionService {
         pageResult.setTotalPage((num+pageUtil.getLimit()-1)/pageUtil.getLimit());
         return pageResult;
     }
-
 }

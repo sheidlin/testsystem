@@ -9,6 +9,7 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="aveScore" column="ave_score" jdbcType="DOUBLE"/>
     </resultMap>
 
     <insert id="insertKnowledgePoint" parameterType="com.zust.stkdy.testsystem.entity.SecondKnowledgePoint">
@@ -30,6 +31,20 @@
         SELECT id,knowledge_point,first_knowledge_point_id,first_knowledge_point,create_time,update_time
         FROM second_knowledge_points
         WHERE knowledge_point=#{knowledgePoint} AND is_deleted=0
+    </select>
+    <select id="findKnowledgePointsByExamId" resultMap="SecondKnowledgeResult">
+        SELECT knowledge_point,AVG(score) AS ave_score
+        FROM second_knowledge_points sk,subjective_answer sa
+        WHERE exam_id=#{examId} AND EXISTS (
+            SELECT *
+            FROM subjective_question sq
+            WHERE sa.question_id=sq.id AND sk.knowledge_point=sq.second_level_knowledge_point
+            AND EXISTS (
+                SELECT * FROM student_exam se
+                WHERE sa.student_id=se.student_id AND sa.exam_id=se.exam_id AND se.is_finished=1
+            )
+        )
+        GROUP BY knowledge_point
     </select>
     <update id="deleteKnowledgePointByKnowledgePoint">
         UPDATE second_knowledge_points

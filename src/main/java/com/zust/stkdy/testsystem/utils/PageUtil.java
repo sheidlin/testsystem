@@ -9,9 +9,10 @@ public class PageUtil extends LinkedHashMap<String, Object> {
     //每页条数
     private int limit;
 
+    public PageUtil(){}
+
     public PageUtil(Map<String, Object> params) {
         this.putAll(params);
-
         //分页参数
         this.page = Integer.parseInt(params.get("page").toString());
         this.limit = Integer.parseInt(params.get("limit").toString());
