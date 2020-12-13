@@ -7,8 +7,6 @@ import com.zust.stkdy.testsystem.utils.ExamUpdUtil;
 import com.zust.stkdy.testsystem.utils.PageResult;
 import com.zust.stkdy.testsystem.utils.PageUtil;
 
-import java.util.List;
-
 public interface ExamService {
     int addExam(Exam exam);
     Exam getExamById(int id);
@@ -21,5 +19,4 @@ public interface ExamService {
     int addSubjectiveQuestion(ExamUpdUtil examUpdUtil);
     int deleteExam(Exam exam);
     PageResult getExamInPage(PageUtil pageUtil,int teacherId);
-    List<Exam> getExamStatistics(PageUtil pageUtil,int teacherId);
 }

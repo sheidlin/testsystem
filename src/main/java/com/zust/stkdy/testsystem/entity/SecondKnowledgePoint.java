@@ -14,7 +14,7 @@ public class SecondKnowledgePoint {
     private Date createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
-    private double aveScore;
+
     public SecondKnowledgePoint() {
     }
 
@@ -22,14 +22,6 @@ public class SecondKnowledgePoint {
         this.firstKnowledgePointId = firstKnowledgePointId;
         this.knowledgePoint = knowledgePoint;
         this.firstKnowledgePoint = firstKnowledgePoint;
-    }
-
-    public double getAveScore() {
-        return aveScore;
-    }
-
-    public void setAveScore(double aveScore) {
-        this.aveScore = aveScore;
     }
 
     public String getFirstKnowledgePoint() {

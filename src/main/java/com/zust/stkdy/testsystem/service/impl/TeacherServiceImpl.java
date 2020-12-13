@@ -4,13 +4,9 @@ import com.zust.stkdy.testsystem.dao.TeacherDao;
 import com.zust.stkdy.testsystem.entity.Teacher;
 import com.zust.stkdy.testsystem.service.TeacherService;
 import com.zust.stkdy.testsystem.utils.MD5Util;
-import com.zust.stkdy.testsystem.utils.PageResult;
-import com.zust.stkdy.testsystem.utils.PageUtil;
 import com.zust.stkdy.testsystem.utils.SystemUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -51,15 +47,5 @@ public class TeacherServiceImpl implements TeacherService {
     public int addTeacher(Teacher teacher) {
         teacher.setPassword(MD5Util.encodeByMd5(teacher.getPassword()));
         return teacherDao.insertTeacher(teacher);
-    }
-
-    @Override
-    public PageResult getTeacherInPage(PageUtil pageUtil, int studentId) {
-        pageUtil.put("studentId",studentId);
-        List<Teacher> teacherList=teacherDao.findAllTeacher(pageUtil);
-        int num=teacherDao.findNumOfTeacher(pageUtil);
-        PageResult pageResult=new PageResult((num+pageUtil.getLimit()-1)/pageUtil.getLimit(),num,pageUtil.getPage(),pageUtil.getLimit());
-        pageResult.setList(teacherList);
-        return pageResult;
     }
 }

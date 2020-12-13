@@ -3,8 +3,6 @@ package com.zust.stkdy.testsystem.service.impl;
 import com.zust.stkdy.testsystem.dao.StudentDao;
 import com.zust.stkdy.testsystem.dao.StudentExamDao;
 import com.zust.stkdy.testsystem.entity.Student;
-import com.zust.stkdy.testsystem.entity.StudentClass;
-import com.zust.stkdy.testsystem.entity.StudentMajor;
 import com.zust.stkdy.testsystem.entity.Teacher;
 import com.zust.stkdy.testsystem.service.StudentService;
 import com.zust.stkdy.testsystem.utils.MD5Util;
@@ -14,10 +12,7 @@ import com.zust.stkdy.testsystem.utils.SystemUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -109,33 +104,5 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student findStudentByEmail(String email) {
         return studentDao.findStudentByEmail(email);
-    }
-
-    @Override
-    public List<StudentMajor> getExamMajorGroup(int examId) {
-        Map map=new HashMap();
-        map.put("examId",examId);
-        List<Student>studentList1=new ArrayList<>();
-        List<Student>resultStudentList1=new ArrayList<>();
-        List<StudentMajor>studentMajorList=new ArrayList<>();
-        studentList1=studentDao.findMajorGroup(map);
-        for(Student student1:studentList1){
-            map.put("major",student1.getMajor());
-            List<Student>studentList2=studentDao.findClassGroup(map);
-            List<StudentClass>studentClassList=new ArrayList<>();
-            for(Student student2:studentList2){
-                StudentClass studentClass=new StudentClass();
-                map.put("class",student2.getClasss());
-                List<Student>studentList3=studentDao.findStudentGroup(map);
-                studentClass.setStudentList(studentList3);
-                studentClass.setStudentClass(student2.getClasss());
-                studentClassList.add(studentClass);
-            }
-            StudentMajor studentMajor=new StudentMajor();
-            studentMajor.setClassList(studentClassList);
-            studentMajor.setStudentMajor(student1.getMajor());
-            studentMajorList.add(studentMajor);
-        }
-        return studentMajorList;
     }
 }

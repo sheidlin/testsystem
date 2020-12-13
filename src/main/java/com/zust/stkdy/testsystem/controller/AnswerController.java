@@ -39,7 +39,7 @@ public class AnswerController {
             return ResultGenerator.genNotLoginResult();
         }
         choiceAnswer.setScore(0);
-        choiceAnswer.setStudentId(student.getId());
+        choiceAnswer.setQuestionId(student.getId());
         if(choiceAnswerService.updateAnswer(choiceAnswer)>0){
             return ResultGenerator.genSuccessResult();
         }

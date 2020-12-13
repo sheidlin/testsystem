@@ -12,9 +12,6 @@ public class Exam {
     private int totalSubjective;
     private int totalChoice;
     private int totalScore;
-    private int numberOfParticipants;
-    private int numberOfFailures;
-    private int numberOfPass;
     private String title;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
@@ -24,8 +21,7 @@ public class Exam {
     private Date endTime;
     private List<ChoiceQuestion>choiceQuestions;
     private List<SubjectiveQuestion>subjectiveQuestions;
-    private List<SecondKnowledgePoint>knowledgePointList;
-    private List<Integer>scoredis;
+
     @Override
     public String toString() {
         return "Exam{" +
@@ -37,46 +33,6 @@ public class Exam {
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 '}';
-    }
-
-    public int getNumberOfParticipants() {
-        return numberOfParticipants;
-    }
-
-    public void setNumberOfParticipants(int numberOfParticipants) {
-        this.numberOfParticipants = numberOfParticipants;
-    }
-
-    public int getNumberOfFailures() {
-        return numberOfFailures;
-    }
-
-    public void setNumberOfFailures(int numberOfFailures) {
-        this.numberOfFailures = numberOfFailures;
-    }
-
-    public int getNumberOfPass() {
-        return numberOfPass;
-    }
-
-    public void setNumberOfPass(int numberOfPass) {
-        this.numberOfPass = numberOfPass;
-    }
-
-    public List<SecondKnowledgePoint> getKnowledgePointList() {
-        return knowledgePointList;
-    }
-
-    public void setKnowledgePointList(List<SecondKnowledgePoint> knowledgePointList) {
-        this.knowledgePointList = knowledgePointList;
-    }
-
-    public List<Integer> getScoredis() {
-        return scoredis;
-    }
-
-    public void setScoredis(List<Integer> scoredis) {
-        this.scoredis = scoredis;
     }
 
     public int getTotalSubjective() {

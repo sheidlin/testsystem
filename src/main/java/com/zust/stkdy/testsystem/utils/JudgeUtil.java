@@ -1,6 +1,5 @@
 package com.zust.stkdy.testsystem.utils;
 
-import com.mysql.cj.util.StringUtils;
 import com.zust.stkdy.testsystem.entity.KeyWord;
 import com.zust.stkdy.testsystem.entity.StudentSecondKnowledgePoint;
 
@@ -14,47 +13,18 @@ public class JudgeUtil {
     private String keyWords;
     private int questionType;
     private int modelType;
-    private double score;
     private static final String MAIN_PATH="/usr/project/scd/";
     private static final String KEY_WORDS = MAIN_PATH+"data/in/KeyWords.txt";
     private static final String ANSWER = MAIN_PATH+"data/in/Answer.txt";
     private static final String STANDARD_ANSWER= MAIN_PATH+"data/in/StandardAnswer.txt";
     private static final String OUT= MAIN_PATH+"data/out/score.txt";
     private static final String[] QUESTION_TYPE={"题型一","题型二","题型三"};
-    private static final String[] MODEL_TYPE={"/model1.py","/model2.py","/model3.py","/model4.py","/model5.py","/model6.py","/model7.py","/model8.py",};
-
-    public int getQuestionType() {
-        return questionType;
-    }
-
-    public void setQuestionType(int questionType) {
-        this.questionType = questionType;
-    }
-
-    public int getModelType() {
-        return modelType;
-    }
-
-    public void setModelType(int modelType) {
-        this.modelType = modelType;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    public JudgeUtil() {
-    }
-
+    private static final String[] MODEL_TYPE={"/model1.py","/model2.py","/model3.py","/model4-.py","/model5.py","/model6.py","/model7.py","/model8.py",};
     public JudgeUtil(String answer, String standardAnswer, String  keyWords, int questionType, int modelType) {
-        this.answer=answer;
+        this.answer = answer;
+        this.standardAnswer = standardAnswer;
         this.modelType=modelType;
         this.questionType=questionType;
-        this.standardAnswer=standardAnswer;
         if(keyWords!=" ") {
             String[] wordsArry = keyWords.split("，");
             StringBuffer stringBuffer = new StringBuffer();
@@ -73,7 +43,7 @@ public class JudgeUtil {
     }
 
     public static void writeImagePath(JudgeUtil judgeAnswerUtil) {
-        System.out.println(1);
+        System.out.println(judgeAnswerUtil.getKeyWords());
         PrintWriter pw1 = null;
         PrintWriter pw2 = null;
         PrintWriter pw3 = null;
@@ -90,7 +60,6 @@ public class JudgeUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(2);
         pw1.close();
         pw2.close();
         pw3.close();
@@ -123,8 +92,8 @@ public class JudgeUtil {
     public double judge(){
         writeImagePath(this);
         execPy();
-        score=Double.parseDouble(readAnswer());
-        return score;
+        String score=readAnswer();
+        return Double.parseDouble(score);
     }
 
     public static StudentSecondKnowledgePoint rewriteLine(StudentSecondKnowledgePoint studentSecondKnowledgePoint,double score){

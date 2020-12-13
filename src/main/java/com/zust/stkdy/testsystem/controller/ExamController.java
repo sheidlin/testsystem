@@ -1,6 +1,7 @@
 package com.zust.stkdy.testsystem.controller;
 
 import com.mysql.cj.util.StringUtils;
+import com.sun.org.apache.bcel.internal.generic.ReturnInstruction;
 import com.zust.stkdy.testsystem.common.Constants;
 import com.zust.stkdy.testsystem.common.Result;
 import com.zust.stkdy.testsystem.common.ResultGenerator;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -49,10 +49,16 @@ public class ExamController {
         if(teacher==null) {
             return ResultGenerator.genNotLoginResult();
         }
-        System.out.println(exam.toString());
-        Exam exam1=examService.getExamByTitle(exam.getTitle());;
+        Exam exam1=examService.getExamByTitle(exam.getTitle());
+        System.out.println(exam1.toString());
         if(exam1!=null&&exam1.getId()!=exam.getId()){
             return ResultGenerator.genErrorResult(Constants.RESULT_CODE_BAD_REQUEST,"TITLE_EXIST");
+        }
+        if(exam1.getTeacherId()!=teacher.getId()){
+            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_BAD_REQUEST,"NOT_YOUR_EXAM");
+        }
+        if(exam1==null){
+            return ResultGenerator.genNullResult("NULL");
         }
         exam.setTeacherId(teacher.getId());
         if(examService.updateExam(exam)>0){
@@ -178,16 +184,5 @@ public class ExamController {
         Exam exam1=examService.getExamInfo(exam);
         return ResultGenerator.genSuccessResult(exam1);
     }
-    @RequestMapping(value = "/statistics",method = RequestMethod.GET)
-    public Result getExamStatistics(@TokenToTeacher Teacher teacher){
-        System.out.println(111111111);
-        if(teacher==null){
-            return ResultGenerator.genNotLoginResult();
-        }System.out.println(teacher.toString());
-        PageUtil pageUtil=new PageUtil();
-        List<Exam>examList=examService.getExamStatistics(pageUtil,teacher.getId());
-        PageResult pageResult=new PageResult();
-        pageResult.setList(examList);
-        return ResultGenerator.genSuccessResult(pageResult);
-    }
+
 }

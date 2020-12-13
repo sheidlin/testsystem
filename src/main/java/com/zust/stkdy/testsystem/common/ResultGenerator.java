@@ -46,12 +46,14 @@ public class ResultGenerator {
         result.setMessage(message);
         return result;
     }
-    public static Result genErrorResult(int code,String message){
+
+    public static Result genErrorResult(int code, String message) {
         Result result = new Result();
         result.setResultCode(code);
         result.setMessage(message);
         return result;
     }
+
     public static Result genNotLoginResult() {
         Result result = new Result();
         result.setResultCode(Constants.RESULT_CODE_NOT_LOGIN);

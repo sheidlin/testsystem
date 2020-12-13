@@ -1,19 +1,15 @@
 package com.zust.stkdy.testsystem.service.impl;
 
-import com.zust.stkdy.testsystem.common.UserPair;
 import com.zust.stkdy.testsystem.dao.*;
 import com.zust.stkdy.testsystem.entity.*;
 import com.zust.stkdy.testsystem.service.ExamService;
 import com.zust.stkdy.testsystem.utils.ExamUpdUtil;
-import com.zust.stkdy.testsystem.utils.ExamUtil;
 import com.zust.stkdy.testsystem.utils.PageResult;
 import com.zust.stkdy.testsystem.utils.PageUtil;
-import org.apache.catalina.User;
-import org.python.core.AstList;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -36,8 +32,6 @@ public class ExamServiceImpl implements ExamService {
     private ChoiceAnswerDao choiceAnswerDao;
     @Autowired
     private SubjectiveAnswerDao subjectiveAnswerDao;
-    @Autowired
-    private SecondKnowledgePointDao secondKnowledgePointDao;
 
     @Override
     public int addExam(Exam exam) {
@@ -108,41 +102,6 @@ public class ExamServiceImpl implements ExamService {
         PageResult pageResult=new PageResult((num+pageUtil.getLimit()-1)/pageUtil.getLimit(),num,pageUtil.getPage(),pageUtil.getLimit());
         pageResult.setList(examList);
         return pageResult;
-    }
-
-    @Override
-    public List<Exam> getExamStatistics(PageUtil pageUtil, int teacherId) {
-        pageUtil.put("teacherId",teacherId);
-        List<Exam>examList=examDao.findFinishedExamByTeacherId(pageUtil);
-        for(Exam exam:examList){
-            exam.setTotalScore(exam.getTotalChoice()*4+exam.getTotalSubjective()*10);
-            List<UserPair>scorePairList=ExamUtil.getScorePairList(exam.getTotalScore());
-            List<Integer>numOfScoreDis=new ArrayList<>();
-            for(UserPair scorePair:scorePairList){
-                System.out.println(scorePair.getKey()+" "+scorePair.getValue());
-                numOfScoreDis.add(studentExamDao.findNumOfParticipantsByUpperAndLower(scorePair.getKey(),scorePair.getValue(),exam.getId()));
-            }
-            exam.setScoredis(numOfScoreDis);
-            exam.setNumberOfParticipants(studentExamDao.findNumOfParticipantsByExamId(exam.getId()));
-            exam.setNumberOfFailures(numOfScoreDis.get(0));
-            exam.setNumberOfPass(exam.getNumberOfParticipants()-exam.getNumberOfFailures());
-            //KnowledgeList
-            System.out.println(2);
-            List<SecondKnowledgePoint>knowledgePointList=secondKnowledgePointDao.findKnowledgePointsByExamId(exam.getId());
-            for(SecondKnowledgePoint secondKnowledgePoint:knowledgePointList){
-                System.out.println(3);
-                SecondKnowledgePoint knowledgePoint=secondKnowledgePointDao.findKnowledgePointByKnowledgePoint(secondKnowledgePoint.getKnowledgePoint());
-                secondKnowledgePoint.setId(knowledgePoint.getId());
-                secondKnowledgePoint.setFirstKnowledgePoint(knowledgePoint.getFirstKnowledgePoint());
-                double aveScore=secondKnowledgePoint.getAveScore();
-                DecimalFormat df = new DecimalFormat("#0.00");
-                secondKnowledgePoint.setAveScore(Double.valueOf(df.format(aveScore)));
-            }
-            exam.setKnowledgePointList(knowledgePointList);
-        }
-        System.out.println(4);
-        int num=examDao.findNumOfExamByTeacherId(pageUtil);
-        return examList;
     }
 
     @Override

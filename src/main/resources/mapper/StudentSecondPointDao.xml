@@ -26,7 +26,6 @@
         SET student_id=#{studentId},first_knowledge_point_id=#{firstKnowledgePointId},first_knowledge_point=#{firstKnowledgePoint},
         second_knowledge_point_id=#{secondKnowledgePointId},knowledge_point=#{knowledgePoint},
         beta=#{beta},total_visit=#{totalVisit},total_score=#{totalScore},M=#{M}
-        WHERE student_id=#{studentId} AND knowledge_point=#{knowledgePoint}
     </update>
     <select id="findKnowledgePointByStudentId" resultMap="StudentKnowledgePointResult">
         SELECT student_id,first_knowledge_point_id,first_knowledge_point,second_knowledge_point_id,knowledge_point,beta,total_visit,total_score,M,create_time,update_time

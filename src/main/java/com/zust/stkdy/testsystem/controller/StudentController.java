@@ -7,17 +7,16 @@ import com.zust.stkdy.testsystem.config.annotation.TokenToStudent;
 import com.zust.stkdy.testsystem.config.annotation.TokenToTeacher;
 import com.zust.stkdy.testsystem.dao.Student2SecondPointDao;
 import com.zust.stkdy.testsystem.dao.StudentDao;
-import com.zust.stkdy.testsystem.entity.*;
+import com.zust.stkdy.testsystem.entity.FirstKnowledgePoint;
+import com.zust.stkdy.testsystem.entity.Student;
+import com.zust.stkdy.testsystem.entity.SubjectiveQuestion;
+import com.zust.stkdy.testsystem.entity.Teacher;
 import com.zust.stkdy.testsystem.service.*;
 import com.zust.stkdy.testsystem.utils.*;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +39,6 @@ public class StudentController {
         }
         if(studentService.findStudentByEmail(student.getEmail())!=null){
             return ResultGenerator.genErrorResult(Constants.RESULT_CODE_BAD_REQUEST,"EMAIL_EXIST");
-        }
-        if(studentService.findStudentBySno(student.getEmail())!=null){
-            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_BAD_REQUEST,"SNO_EXIST");
         }
         if(!student.legal()){
             return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR,"");
@@ -102,7 +98,7 @@ public class StudentController {
             return ResultGenerator.genFailResult("EXIST");
         }
         if(student.getTeacherId()!=-1){
-            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR,"TEACHER_EXIST");
+            return ResultGenerator.genFailResult("TEACHER_EXIST");
         }
         teacher=teacherService.findTeacherById(teacher);
         if(teacher==null){
@@ -178,22 +174,6 @@ public class StudentController {
         }
         return ResultGenerator.genSuccessResult();
     }
-    @RequestMapping(value = "/student/save/upload", method = RequestMethod.POST)
-    public Result importEmp(MultipartFile file, @TokenToTeacher Teacher teacher) {
-        //...
-        List<Student>studentList=new ArrayList<>();
-        if(file.getOriginalFilename().endsWith(".xls"))studentList=FileUtil.getXlsStudentSnoList(file);
-        else if(file.getOriginalFilename().endsWith(".xlsx"))studentList=FileUtil.getXlsxStudentSnoList(file);
-        else return ResultGenerator.genErrorResult(Constants.RESULT_CODE_BAD_REQUEST,"");
-        if(studentList==null)return ResultGenerator.genNullResult("NULL");
-        for(Student student:studentList){
-            if(studentService.updateStudent(student)>0){
-                studentExamService.updateTeacher(student,teacher);
-                System.out.println(student.toString());
-            }
-        }
-        return ResultGenerator.genSuccessResult();
-    }
     @RequestMapping(value = "/common/judgetest",method = RequestMethod.POST)
     public Result judge(@RequestBody TestJudgeUtil testJudgeUtil) {
         SubjectiveQuestion subjectiveQuestion=subjectiveQuestionService.findSubjectiveQuestionById(testJudgeUtil.getQuestionId());
@@ -202,15 +182,6 @@ public class StudentController {
         Double score=judgeUtil.judge();
         testJudgeUtil.setScore(score);
         return ResultGenerator.genSuccessResult(testJudgeUtil);
-    }
-    @RequestMapping(value = "/common/judge",method = RequestMethod.POST)
-    public Result judge(@RequestBody JudgeUtil judgeUtil) {
-        System.out.println(judgeUtil.toString());
-        judgeUtil.setModelType(1);
-        judgeUtil.setQuestionType(1);
-        judgeUtil.judge();
-        System.out.println(judgeUtil.toString());
-        return ResultGenerator.genSuccessResult(judgeUtil);
     }
     @RequestMapping(value = "/student/knowledge/first/profile")
     public Result getFirstKnowledgePointList(@RequestParam Map<String ,Object> param,@TokenToStudent Student student){
@@ -227,7 +198,7 @@ public class StudentController {
         return ResultGenerator.genSuccessResult(pageResult);
     }
     @RequestMapping(value = "/student/knowledge/first/profile/{id}")
-    public Result getSecondKnowledgePointList(@RequestParam Map<String ,Object> param, @PathVariable int id,@TokenToStudent Student student){
+    public Result getFirstKnowledgePointList(@RequestParam Map<String ,Object> param, @PathVariable int id,@TokenToStudent Student student){
         if(student==null) {
             return ResultGenerator.genNotLoginResult();
         }
@@ -238,13 +209,5 @@ public class StudentController {
         }
         PageResult pageResult=knowledgePointService.getSecondKnowledgePointByFirstPointId(student,id);
         return ResultGenerator.genSuccessResult(pageResult);
-    }
-    @RequestMapping(value = "/teacher/exams/groupstudent/{id}")
-    public Result getStudentGroup(@PathVariable int id,@TokenToTeacher Teacher teacher){
-        if(teacher==null) {
-            return ResultGenerator.genNotLoginResult();
-        }
-        List<StudentMajor>studentMajorList=studentService.getExamMajorGroup(id);
-        return ResultGenerator.genSuccessResult(studentMajorList);
     }
 }

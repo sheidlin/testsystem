@@ -1,7 +1,9 @@
 package com.zust.stkdy.testsystem.dao;
 
+import com.sun.javafx.collections.MappingChange;
 import com.zust.stkdy.testsystem.entity.Exam;
 import org.apache.ibatis.annotations.Param;
+import sun.applet.resources.MsgAppletViewer;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,6 @@ public interface ExamDao {
     Exam findExamById(@Param("id") Integer id);
     Exam findExamByTitle(@Param("title") String title);
     List<Exam> findExamByTeacherId(Map param);
-    List<Exam> findFinishedExamByTeacherId(Map param);
     List<Exam> findExam(Map param);
     int findNumOfExamByTeacherId(Map param);
     int findNumOfExam();

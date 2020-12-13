@@ -1,13 +1,10 @@
 package com.zust.stkdy.testsystem.service;
 
 import com.zust.stkdy.testsystem.entity.Student;
-import com.zust.stkdy.testsystem.entity.StudentMajor;
 import com.zust.stkdy.testsystem.entity.Teacher;
 import com.zust.stkdy.testsystem.utils.PageResult;
 import com.zust.stkdy.testsystem.utils.PageUtil;
 import com.zust.stkdy.testsystem.utils.TestJudgeUtil;
-
-import java.util.List;
 
 public interface StudentService {
     public Student findStudentByToken(String token);
@@ -23,5 +20,4 @@ public interface StudentService {
     public Student StudentConfirm(Student student);
     public int updatePassword(Student student);
     public Student findStudentByEmail(String email);
-    public List<StudentMajor> getExamMajorGroup(int examId);
 }
